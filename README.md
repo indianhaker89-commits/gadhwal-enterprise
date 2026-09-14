@@ -1,0 +1,2 @@
+# gadhwal-enterprise
+all prodekt 
