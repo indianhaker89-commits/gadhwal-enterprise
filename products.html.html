@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electrical Product Price List</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#222}
+header{background:#0d6efd;color:white;padding:22px 15px;text-align:center}
+header h1{margin:0 0 6px;font-size:28px}
+header p{margin:0}
+.container{max-width:1100px;margin:20px auto;padding:0 14px}
+.search{width:100%;padding:13px;border:1px solid #ccc;border-radius:10px;font-size:16px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 3px 12px #00000018}
+.card img{width:100%;height:150px;object-fit:cover;background:#eee}
+.info{padding:14px}
+.name{font-weight:bold;font-size:18px;margin-bottom:5px}
+.detail{color:#666;font-size:14px;margin-bottom:10px}
+.price{font-size:20px;font-weight:bold;color:#198754;margin-bottom:12px}
+button{width:100%;padding:10px;border:0;border-radius:8px;background:#0d6efd;color:white;font-size:15px;cursor:pointer}
+.cart{position:sticky;bottom:10px;margin-top:22px;background:white;padding:16px;border-radius:12px;box-shadow:0 3px 15px #0002}
+.cart h2{margin:0 0 8px}
+#total{font-size:22px;font-weight:bold;color:#198754}
+.whatsapp{background:#25d366;margin-top:10px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🛒 Electrical Product Price List</h1>
+<p>Product dekhein aur order ke liye Cart mein add karein</p>
+</header>
+
+<div class="container">
+<input class="search" id="search" onkeyup="searchProducts()" placeholder="🔎 Product search karein...">
+
+<div class="grid" id="products"></div>
+
+<div class="cart">
+<h2>🛍️ Cart</h2>
+<div id="cartItems">Abhi cart khali hai.</div>
+<p>Total: <span id="total">₹0</span></p>
+<button class="whatsapp" onclick="orderWhatsApp()">📱 WhatsApp Order</button>
+</div>
+</div>
+
+<script>
+const products = [
+["PVC Tape","Standard",10,"https://placehold.co/600x400?text=PVC+Tape"],
+["LED Bulb","9W",100,"https://placehold.co/600x400?text=LED+Bulb+9W"],
+["5 Pin Socket","5 Pin",30,"https://placehold.co/600x400?text=5+Pin+Socket"],
+["2 Pin Socket","2 Pin",20,"https://placehold.co/600x400?text=2+Pin+Socket"],
+["2 Pin Sookit","2 Pin",10,"https://placehold.co/600x400?text=2+Pin+Sookit"],
+["3 Pin Socket","3 Pin",50,"https://placehold.co/600x400?text=3+Pin+Socket"],
+["Switch","6A",25,"https://placehold.co/600x400?text=Switch+6A"],
+["Switch","16A",100,"https://placehold.co/600x400?text=Switch+16A"],
+["PVC Pipe","110 mm",500,"https://placehold.co/600x400?text=PVC+Pipe+110mm"],
+["PVC Pipe","75 mm",300,"https://placehold.co/600x400?text=PVC+Pipe+75mm"],
+["PVC Pipe","50 mm",200,"https://placehold.co/600x400?text=PVC+Pipe+50mm"],
+["Solvent","59 ml",150,"https://placehold.co/600x400?text=Solvent+59ml"]
+];
+
+let cart=[];
+
+function showProducts(list=products){
+ document.getElementById("products").innerHTML=list.map((p,i)=>`
+ <div class="card">
+   <img src="${p[3]}" alt="${p[0]}" onerror="this.src='https://placehold.co/600x400?text=Product'">
+   <div class="info">
+    <div class="name">${p[0]}</div>
+    <div class="detail">${p[1]}</div>
+    <div class="price">₹${p[2]}</div>
+    <button onclick="addCart(${products.indexOf(p)})">➕ Add to Cart</button>
+   </div>
+ </div>`).join("");
+}
+
+function addCart(i){
+ cart.push(products[i]);
+ updateCart();
+}
+
+function updateCart(){
+ if(!cart.length){
+   document.getElementById("cartItems").innerHTML="Abhi cart khali hai.";
+ }else{
+   document.getElementById("cartItems").innerHTML=cart.map((p,i)=>
+   `${i+1}. ${p[0]} (${p[1]}) — ₹${p[2]} 
+   <button style="width:auto;padding:4px 8px;margin-left:5px;background:#dc3545" onclick="removeCart(${i})">X</button>`
+   ).join("<br>");
+ }
+ document.getElementById("total").innerText="₹"+cart.reduce((s,p)=>s+p[2],0);
+}
+
+function removeCart(i){
+ cart.splice(i,1);
+ updateCart();
+}
+
+function searchProducts(){
+ const q=document.getElementById("search").value.toLowerCase();
+ showProducts(products.filter(p=>(p[0]+" "+p[1]).toLowerCase().includes(q)));
+}
+
+function orderWhatsApp(){
+ if(!cart.length){alert("Pehle product Cart mein add karein.");return;}
+ let msg="Namaste, mujhe ye products chahiye:%0A";
+ cart.forEach((p,i)=>msg+=`${i+1}. ${p[0]} (${p[1]}) - ₹${p[2]}%0A`);
+ msg+=`%0ATotal: ₹${cart.reduce((s,p)=>s+p[2],0)}`;
+ // Apna WhatsApp number yahan badlein:
+ const phone="91XXXXXXXXXX";
+ window.open("https://wa.me/"+phone+"?text="+msg,"_blank");
+}
+
+showProducts();
+</script>
+</body>
+</html>
